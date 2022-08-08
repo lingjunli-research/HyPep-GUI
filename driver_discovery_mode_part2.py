@@ -115,13 +115,16 @@ with open('discovery_FDR_filtered_target_list.pkl', 'rb') as file_i:
 
 if to_discover == 1:
     discovery_list = identification_mode.FDR_Calc.filter_by_score(raw_target_run, float(discovery_FDR_filtered_score))
-    print(discovery_list)
     perfect_and_dup_precursor_removed_list = discovery_mode.precursor_sorted(discovery_list)
     ALC_filter_list = discovery_mode.ALC_filter(perfect_and_dup_precursor_removed_list, float(malc_entry))
     Local_Confidence_filter_list = discovery_mode.local_confidence_filter(ALC_filter_list,float(disc_alc_entry_val_choice))
-    match_removed_list = identification_mode.ID_modifications.removing_matches(Local_Confidence_filter_list,discovery_FDR_filtered_target_list)
+    match_removed_list = identification_mode.ID_modifications.removing_matches(FDR_filtered_target_list,Local_Confidence_filter_list)
+    discovery_list = identification_mode.ID_modifications.accesssion_information(match_removed_list)  
     if motif_dec == 1:
-        Motif_Filter_list = discovery_mode.motif_filter(match_removed_list)
+        Motif_Filter_list = discovery_mode.motif_filter(discovery_list)
+        discovery_list = Motif_Filter_list
         
         with open('Motif_Filter_list.pkl', 'wb') as file_v:
-            pickle.dump(Motif_Filter_list, file_v)
+            pickle.dump(discovery_list, file_v)
+            
+   ## discovery_list ==> out_path
