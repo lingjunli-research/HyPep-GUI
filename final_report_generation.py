@@ -8,15 +8,19 @@ Created on Mon Jul 18 07:46:44 2022
 
 import pandas as pd
 import csv
+import pickle
 
 from user_input import results_out_path
 from user_input import SHS_out_path
 from user_input import SHS_results_path
 from user_input import SHS_Discovery_out_path
-from user_input import SHS_Discovery_results_path
 from user_input import AMM_out_path
 from user_input import psm_matches_path
 from user_input import db_path
+
+with open('discovery_list.pkl', 'rb') as file_i:      
+    # Call load method to deserialze
+    SHS_Discovery_results_path = pickle.load(file_i)
 
 #ID mode
 file_name =  SHS_out_path
