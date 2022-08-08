@@ -93,7 +93,9 @@ class algorithm:
 
             if algorithm_score >= 1:
                 scan_num_alcs = scan_number_dict[original_precursor][0:-1]
-                output_data.append(str(original_precursor + ' '+scan_num_alcs + ' ' + original_database + ' '+ str(round(algorithm_score,3))))
+                #matches = [original_precursor, scan_num_alcs,original_database,str(round(algorithm_score,3))]
+                matches = str(original_precursor + ' '+scan_num_alcs + ' ' + original_database + ' '+ str(round(algorithm_score,3)))
+                output_data.append(matches)
             
         return output_data
    
