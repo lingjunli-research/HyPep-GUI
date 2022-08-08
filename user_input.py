@@ -132,5 +132,6 @@ psm_matches_path = looping_final_directory_path + '\\' + sample_name + '_psm_mat
 
 AMM_out_path = results_export + '\\' + sample_name + '_AMM_final_report.csv'
 SHS_out_path = results_export + '\\' + sample_name + '_SHS_final_report.csv'
+SHS_Discovery_out_path = results_export + '\\' + sample_name + '_SHS_discovery_final_report.csv'
 
 folder_generation_status = True
