@@ -16,9 +16,7 @@ def precursor_sorted(SHS_data=list):
     p_sequence = []
     pr_check = []
     for pr_sequence in pr_sort:
-        if float(pr_sequence[3]) >= 4.0:
-            continue
-        if pr_sequence[0] not in pr_check:
+        if float(pr_sequence[3]) < 4.0 and pr_sequence[0] not in pr_check:
             p_sequence.append(pr_sequence)
             pr_check.append(pr_sequence[0])
     return p_sequence    
@@ -145,7 +143,7 @@ def motif_filter(SHS_FDR_filtered_data):
         motif_info = ','.join(list(set(motif_info)))
         if len(scans_info) != 0:
             data[1] = scans_info[0:-1]
-            data.append(motif_info[0:-1])
+            data.append(motif_info)
             motif_filtered_list.append(data)
     return motif_filtered_list
 
