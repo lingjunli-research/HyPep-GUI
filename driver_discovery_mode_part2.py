@@ -120,8 +120,15 @@ if to_discover == 1:
     ALC_filter_list = discovery_mode.ALC_filter(perfect_and_dup_precursor_removed_list, float(malc_entry))
     Local_Confidence_filter_list = discovery_mode.local_confidence_filter(ALC_filter_list,float(disc_alc_entry_val_choice))
     match_removed_list = identification_mode.ID_modifications.removing_matches(Local_Confidence_filter_list,discovery_FDR_filtered_target_list)
+    
+    discovery_dataframe = pd.DataFrame(data=discovery_list, columns=['Precursor_Sequence', 'Scan_Numbers[ALC%]','Sequence (PTMs removed)', 'Accession Number','Score']))
     if motif_dec == 1:
         Motif_Filter_list = discovery_mode.motif_filter(match_removed_list)
+        discovery_dataframe = pd.DataFrame(data=discovery_list, columns=['Precursor_Sequence', 'Scan_Numbers[ALC%]','Sequence (PTMs removed)', 'Accession Number','Score','Motifs']))
         
         with open('Motif_Filter_list.pkl', 'wb') as file_v:
             pickle.dump(Motif_Filter_list, file_v)
+        
+    ## need to add pickle files for discovery mode
+            
+    
