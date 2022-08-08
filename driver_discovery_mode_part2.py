@@ -131,6 +131,6 @@ if to_discover == 1:
     
     ## pickle file for discovery mode
     with open('discovery_list.pkl', 'wb') as file_v:
-            pickle.dump(discovery_list, file_v)
+            pickle.dump(discovery_dataframe, file_v)
             
     
