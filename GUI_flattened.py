@@ -56,11 +56,6 @@ global db_path
 global out_path
 ###
 
-
-
-
-discov_mode_decision = []
-
 #SHS mode choice storage
 id_fdr_thresh_decision = []
 id_reverse_alg_decision =  []
@@ -68,14 +63,6 @@ id_hybrid_alg_decision  = []
 id_random_alg_decision = []
 id_shuffled_ag_decision = []
 id_sws_decision = []
-
-#Discovery mode choice storage
-
-discovery_alc_thresh_decision = []
-discovery_motif_path_input_decision = []
-discovery_malc_thresh_decision = []
-discovery_fdr_thresh_decision = []
-
 
 #AMM mode choice storage
 prec_cutoff_thresh_decision = []
@@ -127,9 +114,7 @@ def run_hypep():
 def help_form():
     hide_all_frames()
     help_click_frame.pack(side = RIGHT)
-def get_motif_file_path(): 
-    """ Function provides the database full file path."""
-    return path_motif_file
+
 
 
 def param_form_save():
@@ -163,23 +148,7 @@ def param_file_input_save():
         messagebox.showerror('Invalid Sample Name','Sample name cannot have spaces!')
 
 def param_log_export():
-    to_discover = disc_mode_choice.get()
-    if to_discover == 1:
-        discovery_report = 'Perform discovery mode? Yes'
-        malc_current = discovery_malc_thresh_decision[-1]
-        malc_report = 'Minimum average local confidence value: ' + malc_current
-        disc_alc_current = discovery_alc_thresh_decision[-1]
-        alc_report = 'Average local confidence value: ' + disc_alc_current
-        motif_current = discovery_motif_path_input_decision[-1]
-        motif_report = 'Path to motif file: ' + motif_current
-        disc_fdr_current = discovery_fdr_thresh_decision[-1]
-        disc_fdr_report = 'Discovery mode FDR cutoff: ' + disc_fdr_current
-    else:
-        discovery_report = 'Perform discovery mode? No'
-        malc_report = 'Minimum average local confidence value: N/A'
-        alc_report = 'Average local confidence value: N/A'
-        motif_report = 'Path to motif file: N/A'
-    
+   
     fdr_selection = fdr_alg_choice.get()
     fdr_selection = str(fdr_selection)
     if fdr_selection == '1':
@@ -244,9 +213,9 @@ def param_log_export():
     out_path = input_out_dir_text.get()
     out_path_report = 'Ouput directory path: ' + out_path
     
-    param_file_entries = [sample_ID_report,discovery_report,malc_report,alc_report,fdr_algorithm_report,
+    param_file_entries = [sample_ID_report,fdr_algorithm_report,
                           fdr_percent_report,window_size_report,max_p_charge_report,max_f_charge_report,
-                          p_err_report,f_err_report,pro_mex_report,loop_report,motif_report,db_path_report,
+                          p_err_report,f_err_report,pro_mex_report,loop_report,db_path_report,
                           peaks_path_report,topfd_path_report,rawconverter_path_report,pp_path_report,
                           out_path_report]
     
@@ -254,11 +223,6 @@ def param_log_export():
     with open(param_file_path,'a') as f:
         f.writelines('\n'.join(param_file_entries))
 
-    min_alc_pick_path = 'min_alc.pkl'
-    discovery_alc_pick_path = 'discovery_alc.pkl'
-    motif_path_pick_path = 'motif_path.pkl'
-    discovery_fdr_score_pick_path = 'discovery_fdr_score.pkl'
-    database_path_pick_path = 'database_path.pkl'
     fdr_pick_path = 'fdr.pkl'
     max_precursor_z_pick_path = 'max_precursor_z.pkl'
     max_fragment_z_pick_path = 'max_fragment_z.pkl'
@@ -273,19 +237,9 @@ def param_log_export():
     theoretical_fragment_path_pick_path = 'theoretical_fragment_path.pkl'
     output_directory_path_pick_path = 'output_directory.pkl'
     window_size_pick_path = 'window_size.pkl'
-    start_discovery_mode_pick_path = 'discovery_mode.pkl'
     fdr_algorithm_pick_path = 'fdr_algorithm.pkl'
      #A new file will be created
-    with open(min_alc_pick_path, 'wb') as file_a:
-        pickle.dump(malc_current, file_a)
-    with open(discovery_alc_pick_path, 'wb') as file_b:
-        pickle.dump(disc_alc_current, file_b)
-    with open(motif_path_pick_path, 'wb') as file_c:
-        pickle.dump(motif_current, file_c)
-    with open(discovery_fdr_score_pick_path, 'wb') as file_d:
-        pickle.dump(disc_fdr_current, file_d)
-    with open(database_path_pick_path, 'wb') as file_e:
-        pickle.dump(db_path, file_e)
+
     with open(fdr_pick_path, 'wb') as file_f:
         pickle.dump(fdr_percent, file_f)
     with open(max_precursor_z_pick_path, 'wb') as file_g:
@@ -314,111 +268,8 @@ def param_log_export():
         pickle.dump(out_path, file_q)    
     with open(window_size_pick_path, 'wb') as file_s:
         pickle.dump(window_size, file_s)  
-    with open(start_discovery_mode_pick_path, 'wb') as file_t:
-        pickle.dump(to_discover, file_t)    
     with open(fdr_algorithm_pick_path, 'wb') as file_u:
         pickle.dump(fdr_selection, file_u)  
-def disc_mode_param_form():
-    disc_alc_entry_report = StringVar()
-    input_motif_file_text = StringVar()
-    disc_mlc_entry_report = StringVar()  
-    hypep_score_cutoff_fdr_report = StringVar()
-    
-    def set_path_motif_file_field():
-        path_motif_file = askopenfilename(filetypes=[("CSV Files","*.csv")]) 
-        input_motif_file_text.set(path_motif_file)
-    def get_motif_file_path(): 
-        """ Function provides the database full file path."""
-        return path_motif_file
-    
-    def stay_on_top():
-        win_disc.lift()
-        win_disc.after(2000,stay_on_top)
-    
-    win_disc = Toplevel(root)
-    stay_on_top()
-    win_disc.title('Discovery Mode Parameter Selection')
-    win_disc.iconbitmap(r"hypep_icon.ico")
-    win_disc.geometry('500x310')
-    disc_parameters = Canvas(win_disc, width= 500, height= 310)
-    disc_parameters.pack()
-    disc_mode_title = Canvas(disc_parameters, width= 500, height= 50)
-    disc_mode_title.pack(side=TOP)
-    disc_mode_title.create_text(250, 25, text="Discovery Mode Parameters", fill="#2F4FAA", font=(Font_tuple,20),justify=CENTER)
-    disc_mode_title.pack(side=TOP)
-    disc_mlc_percent_set = Canvas(disc_parameters, width= 500, height= 50)
-    disc_mlc_percent_set.pack(side=TOP)
-    disc_mlc_percent_title = Canvas(disc_mlc_percent_set,width=250,height=50)
-    disc_mlc_percent_title.pack(side=LEFT)
-    disc_mlc_percent_title.create_text(100, 25, text="Minimum ALC", fill="#2F4FAA", font=(Font_tuple,10),justify=RIGHT)
-    disc_mlc_percent_title.pack()
-    disc_mlc_entry = Canvas(disc_mlc_percent_set,width=250,height=50)
-    disc_mlc_entry.pack(side=RIGHT)
-    disc_mlc_entry_space = Entry(disc_mlc_entry,textvariable=disc_mlc_entry_report)
-    disc_mlc_entry_space.pack()
-    disc_alc_percent_set = Canvas(disc_parameters, width= 500, height= 50)
-    disc_alc_percent_set.pack(side=TOP)
-    disc_alc_percent_title = Canvas(disc_alc_percent_set,width=250,height=50)
-    disc_alc_percent_title.pack(side=LEFT)
-    disc_alc_percent_title.create_text(100, 25, text="Minimum local confidence", fill="#2F4FAA", font=(Font_tuple,10),justify=RIGHT)
-    disc_alc_percent_title.pack()
-    
-    hypep_score_cutoff_fdr_set = Canvas(disc_parameters, width= 500, height= 50)
-    hypep_score_cutoff_fdr_set.pack(side=TOP)
-    
-    hypep_score_cutoff_fdr_set_title = Canvas(hypep_score_cutoff_fdr_set,width=310,height=50)
-    hypep_score_cutoff_fdr_set_title.pack(side=LEFT)
-    hypep_score_cutoff_fdr_set_title.create_text(160, 25, text="HyPep Score Cutoff at", fill="#2F4FAA", font=(Font_tuple,10),justify=RIGHT)
-    hypep_score_cutoff_fdr_set_title.pack()
-    
-    hypep_score_cutoff_fdr_set_title2 = Canvas(hypep_score_cutoff_fdr_set,width=250,height=50)
-    hypep_score_cutoff_fdr_set_title2.pack(side=RIGHT)
-    
-    hypep_score_cutoff_fdr_entry = Canvas(hypep_score_cutoff_fdr_set_title2,width=125,height=50)
-    hypep_score_cutoff_fdr_entry.pack(side=LEFT)
-    hypep_score_cutoff_fdr_entry_space = Entry(hypep_score_cutoff_fdr_entry,textvariable=hypep_score_cutoff_fdr_report)
-    hypep_score_cutoff_fdr_entry_space.pack()
-    
-    hypep_score_cutoff_fdr_text2 = Canvas(hypep_score_cutoff_fdr_set_title2,width=125,height=50)
-    hypep_score_cutoff_fdr_text2.pack(side=RIGHT)
-    hypep_score_cutoff_fdr_text2.create_text(25, 25, text="% FDR", fill="#2F4FAA", font=(Font_tuple,10),justify=RIGHT)
-    hypep_score_cutoff_fdr_text2.pack(side=RIGHT)
-    
-    
-    disc_alc_entry = Canvas(disc_alc_percent_set,width=250,height=50)
-    disc_alc_entry.pack(side=RIGHT)
-    disc_alc_entry_space = Entry(disc_alc_entry,textvariable=disc_alc_entry_report)
-    disc_alc_entry_space.pack(side=LEFT)
-    motif_file_entry_frame = Canvas(disc_parameters, width= 450, height= 50)
-    motif_file_entry_frame.pack(side=TOP)
-    motif_file_entry_text_frame = Canvas(motif_file_entry_frame, width= 103, height= 50)
-    motif_file_entry_text_frame.pack(side=LEFT)
-    motif_file_entry_text_frame.create_text(53, 25, text="Motif File", fill="#2F4FAA", font=(Font_tuple,10),justify=CENTER)
-    motif_file_entry_text_frame.pack()
-    motif_file_entry_choice_frame = Canvas(motif_file_entry_frame, width= 300, height= 50)
-    motif_file_entry_choice_frame.pack(side=RIGHT)
-    motif_file_choice_browse_entry = Entry(motif_file_entry_choice_frame, textvariable = input_motif_file_text, width = 45)
-    motif_file_choice_browse_entry.pack(side=LEFT)
-    motif_file_choice_browse = Button(motif_file_entry_choice_frame, text = "Browse", command = set_path_motif_file_field)
-    motif_file_choice_browse.pack(side=RIGHT)
-    
-    
-    
-    def disc_mode_form_kill():
-        win_disc.destroy()
-        disc_alc_entry_val_choice = disc_alc_entry_report.get()
-        malc_entry = disc_mlc_entry_report.get()
-        hypep_score_cutoff_fdr = hypep_score_cutoff_fdr_report.get()
-        motif_path = input_motif_file_text.get()
-        discovery_alc_thresh_decision.append(disc_alc_entry_val_choice)
-        discovery_motif_path_input_decision.append(motif_path)
-        discovery_malc_thresh_decision.append(malc_entry)
-        discovery_fdr_thresh_decision.append(hypep_score_cutoff_fdr)
-        
-    disc_save_button = Button(win_disc, width=218,height=50,text='Save preferences',fg='white',relief='flat',borderwidth=5, 
-                         bg='#2F4FAA',font=(Font_tuple,15),command=disc_mode_form_kill)
-    disc_save_button.pack(side=BOTTOM)    
-
 
 
 im1 = Image.open(r"About.png")
@@ -494,16 +345,6 @@ modules_title_frame = Canvas(modules_click_frame,width=460,height=50)
 modules_title_frame.pack(side=TOP)
 modules_title_frame.create_text(250, 25, text="Add Modules", fill="#2F4FAA", font=(Font_tuple,25),justify=CENTER)
 modules_title_frame.pack(side=TOP)
-discovery_frame = Canvas(modules_click_frame,width=460,height=25)
-discovery_frame.pack(side=TOP)
-discovery_frame_title = Canvas(discovery_frame,width=200,height=25)
-discovery_frame_title.pack(side=LEFT)
-discovery_frame_title.create_text(150, 15, text="Discovery Mode?", fill="#2F4FAA", font=(Font_tuple,10),justify=RIGHT)
-discovery_frame_title.pack()
-discovery_check_frame = Canvas(discovery_frame,width=200,height=25)
-discovery_check_frame.pack(side=RIGHT)
-discovery_check_frame_checkbox = Checkbutton(discovery_check_frame, variable=disc_mode_choice, command=disc_mode_param_form,font=(Font_tuple,10),width=2,height=3)
-discovery_check_frame_checkbox.pack(side=TOP)
 shs_frame = Canvas(modules_click_frame,width=460,height=50)
 shs_frame.pack(side=TOP)
 shs_frame.create_text(250, 25, text="SHS Parameters", fill="#2F4FAA", font=(Font_tuple,14),justify=CENTER)
@@ -616,8 +457,8 @@ amm_loops_dropdown.pack()
 ##
 save_button_frame= Canvas(modules_click_frame, width= 460, height= 50)
 #save_button_frame= Canvas(modules_click_frame, width= 460, height= 100)
-save_button_frame.pack(side=TOP)
-save_button = Button(save_button_frame, width=450,height=1,text='Save preferences',fg='white',relief='flat',borderwidth=5, 
+save_button_frame.pack(side=BOTTOM)
+save_button = Button(save_button_frame, width=450,height=4,text='Save preferences',fg='white',relief='flat',borderwidth=5, 
                     bg='#2F4FAA',font=(Font_tuple,15),command=param_form_save)
 #save_button = Button(save_button_frame, width=450,height=4,text='Save preferences',fg='white',relief='flat',borderwidth=5, 
 #                    bg='#2F4FAA',font=(Font_tuple,15),command=param_form_save)
@@ -787,10 +628,6 @@ def RunHyPep():
     time.sleep(5)
     os.system('python command_center.py')
 
-def RunSelectScripts():
-    time.sleep(5)
-    os.system('python command_center_after_prot_pros.py')
-
 def combine_funcs(*funcs):
     def combined_func(*args, **kwargs):
         for f in funcs:
@@ -819,11 +656,6 @@ save_button.pack(side=BOTTOM)
 
 #save_button = Button(run_click_frame, width=450,height=1,text='Run Analysis!',fg='white',relief='flat',borderwidth=5, 
 #                    bg='#2F4FAA',font=(Font_tuple,15),command = combine_funcs(param_log_export,RunHyPep))
-
-advanced_button = Button(run_click_frame, width=450,height=1,text='Advanced settings',fg='white',relief='flat',borderwidth=5, 
-                    bg='#2F4FAA',font=(Font_tuple,15),command = threading.Thread(target=combine_funcs(param_log_export,pb.start,RunSelectScripts)).start)
-advanced_button.pack(side=BOTTOM)
-
 
 #Help page
 help_click_frame= Canvas(root, width= 450, height= 525)
