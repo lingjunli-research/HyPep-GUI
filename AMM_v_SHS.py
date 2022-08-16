@@ -8,10 +8,7 @@ Created on Thu Mar 31 11:18:38 2022
 
 import pandas as pd
 import numpy as np
-from matplotlib import pyplot as plt
-from matplotlib_venn import venn2
 import csv
-import matplotlib
 import re
 from datetime import datetime
 now = datetime.now()
@@ -26,7 +23,7 @@ SHS_results = SHS_results_path_for_AMM #sequence homology search results
 working_directory = AMM_v_SHS_out_path #output directory
 
 
-#SHS_results = pd.read_csv(SHS_results)
+SHS_results = pd.read_csv(SHS_results)
 shs_seq = SHS_results['Sequence'].values.tolist() #list of SHS sequences
 
 amm_results = pd.read_csv(amm_results)

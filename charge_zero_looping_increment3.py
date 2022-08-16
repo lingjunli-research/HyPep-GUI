@@ -40,7 +40,7 @@ h_mass = 1.00784
 
 first_charge = fragment_charges[0]
 remaining_charges = fragment_charges[1:]
-
+print(remaining_charges)
 target_list = pd.read_csv(target_list_import)
 sequence_targets = target_list['Target Sequence'].values.tolist()
 

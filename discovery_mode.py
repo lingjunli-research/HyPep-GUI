@@ -16,7 +16,9 @@ def precursor_sorted(SHS_data=list):
     p_sequence = []
     pr_check = []
     for pr_sequence in pr_sort:
-        if float(pr_sequence[3]) < 4.0 and pr_sequence[0] not in pr_check:
+        if float(pr_sequence[3]) >= 4.0:
+            continue
+        if pr_sequence[0] not in pr_check:
             p_sequence.append(pr_sequence)
             pr_check.append(pr_sequence[0])
     return p_sequence    
@@ -84,7 +86,7 @@ def local_confidence_filter(SHS_FDR_filtered_data=list, user_local_confidence=fl
         scan_pass_list = []
         for scans_alc in scan_list:
             scans = scans_alc[0:scans_alc.index('[')]
-            local_confidence_list = precursor_dataframe.loc[precursor_dataframe['Scan'] == scans].iloc[0,4].split()
+            local_confidence_list = precursor_dataframe.loc[precursor_dataframe['Scan'] == scans].iloc[0,3].split()
             if local_confidence_check(user_local_confidence,local_confidence_list):
                 scan_pass_list.append(scans_alc)
         for i in scan_pass_list:
@@ -94,7 +96,34 @@ def local_confidence_filter(SHS_FDR_filtered_data=list, user_local_confidence=fl
             LC_filtered_list.append(data)
     return LC_filtered_list
 
-def motif_indicator(motif=str, position=str, precursor_sequence=str):
+def PTM(precursor_sequence, ptm_description_list):
+    """
+    ### Replace the monoisotopic mass in the de novo sequenced peptide to actual PTMs
+
+    Args:
+        precursor_sequence (str): de novo sequenced peptide
+        ptm_description_list (list): PTMs description
+    Return:
+        precursor sequence (str): de novo sequenced peptide with monoisotopic mass replaced with modifications
+    """
+    if ptm_description_list == ['nan']:
+        return precursor_sequence
+    PTM_dict = {'Amidation': '(-.98)',
+                'Oxidation (M)': '(+15.99)',
+                'Pyro-glu from Q':'Q(-17.03)',
+                'Pyro-glu from E':'E(-18.01)'}
+    PTM_replacement = {'Amidation': 'amide',
+                        'Oxidation (M)': '(O)',
+                        'Pyro-glu from Q':'pQ',
+                        'Pyro-glu from E':'pE'}
+    
+    while len(ptm_description_list) > 0:
+        ptm_des = ptm_description_list[0]
+        precursor_sequence = precursor_sequence.replace(PTM_dict[ptm_des], PTM_replacement[ptm_des])
+        ptm_description_list.remove(ptm_description_list[0])
+    return precursor_sequence
+    
+def motif_indicator(motif=str, position=str, precursor_sequece=str):
     """
     ### Searches the motif sequence in the de novo sequenced peptide
     
@@ -106,11 +135,11 @@ def motif_indicator(motif=str, position=str, precursor_sequence=str):
         True if motif sequence found in the de novo sequenced peptide
         False if motif sequence is not found in the de novo sequenced peptide
     """
-    if position == 'C-term' and precursor_sequence.endswith(motif):
+    if position == 'C-term' and precursor_sequece.endswith(motif):
         return True
-    if position == 'N-term' and precursor_sequence.startswith(motif):
+    if position == 'N-term' and precursor_sequece.startswith(motif):
         return True
-    if position == 'Any' and motif in precursor_sequence:
+    if position == 'Any' and motif in precursor_sequece:
         return True
     else:
         return False
@@ -131,19 +160,16 @@ def motif_filter(SHS_FDR_filtered_data):
     motif_sequences = list(motif['Motif Sequence'])
     for data in SHS_FDR_filtered_data:
         scans_info = ''
-        motif_info = []
         scan_list = data[1].split(',')
         for scanning in scan_list:
             scans = scanning[0:scanning.index('[')]
-            precursor_sequence = precursor_dataframe.loc[precursor_dataframe['Scan'] == scans].iloc[0,0]
+            precursor_sequence, ptm_description = [precursor_dataframe.loc[precursor_dataframe['Scan'] == scans].iloc[0,0], precursor_dataframe.loc[precursor_dataframe['Scan'] == scans].iloc[0,3]] 
+            ptm_modified_precursor_sequence = PTM(precursor_sequence, str(ptm_description).split('; '))
             for m in motif_sequences:
-                if motif_indicator(m, motif.loc[motif['Motif Sequence'] == m].iloc[0,1], precursor_sequence):
+                if motif_indicator(m, motif.loc[motif['Motif Sequence'] == m].iloc[0,1], ptm_modified_precursor_sequence):
                     scans_info += str(scanning+',')
-                    motif_info.append(m)
-        motif_info = ','.join(list(set(motif_info)))
         if len(scans_info) != 0:
             data[1] = scans_info[0:-1]
-            data.append(motif_info)
             motif_filtered_list.append(data)
     return motif_filtered_list
 
