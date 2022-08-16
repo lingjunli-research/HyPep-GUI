@@ -30,9 +30,8 @@ with open('SHS_ouput.pkl', 'rb') as file_h:
     SHS_results_path = pickle.load(file_h)
 
 SHS_results_path = SHS_results_path.rename(columns={"accession": "Accession Number", "Precursor_Sequence": "Sequence"})
-SHS_results_path_for_AMM = SHS_results_path
 
-#SHS_results_path_for_AMM = r"SHS_pretend_results_empty.csv"
+SHS_results_path_for_AMM = r"SHS_pretend_results_empty.csv"
 
 #SHS_results_path = r"C:\Users\lawashburn\Documents\HyPep1.0\HyPep_GUI_linked_final_v2\input_files\SHS_pretend_results.csv"
 #SHS_results_path = FDR_filtered_target_list_for_AMM ### a list not a file anymore
@@ -51,7 +50,6 @@ for a in range(1,max_p_charge+1):
 fragment_charges = []
 for a in range(1,max_f_charge+1):
     fragment_charges.append(a)
-
 number_loops = int(loop)
 
 rawconverter_formatting_out_path = output_folder + '\\' + 'rawconverter_MS2_formatted'
@@ -133,6 +131,5 @@ psm_matches_path = looping_final_directory_path + '\\' + sample_name + '_psm_mat
 
 AMM_out_path = results_export + '\\' + sample_name + '_AMM_final_report.csv'
 SHS_out_path = results_export + '\\' + sample_name + '_SHS_final_report.csv'
-SHS_Discovery_out_path = results_export + '\\' + sample_name + '_SHS_discovery_final_report.csv'
 
 folder_generation_status = True

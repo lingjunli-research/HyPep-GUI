@@ -12,21 +12,21 @@ import pandas as pd
 #All values will be exported as strings
 
 
-with open('min_alc.pkl', 'rb') as file_a:      
-    # Call load method to deserialze
-    malc_entry = pickle.load(file_a)
-
-with open('discovery_alc.pkl', 'rb') as file_b:      
-    # Call load method to deserialze
-    discovery_alc = pickle.load(file_b)
-    
-with open('motif_path.pkl', 'rb') as file_c:      
-    # Call load method to deserialze
-    motif_path = pickle.load(file_c)
-    
-with open('discovery_fdr_score.pkl', 'rb') as file_d:      
+#with open('min_alc.pkl', 'rb') as file_a:      
 #    # Call load method to deserialze
-    discovery_fdr_score = pickle.load(file_d)
+#    malc_entry = pickle.load(file_a)
+
+#with open('discovery_alc.pkl', 'rb') as file_b:      
+    # Call load method to deserialze
+#    discovery_alc = pickle.load(file_b)
+    
+#with open('motif_path.pkl', 'rb') as file_c:      
+    # Call load method to deserialze
+#    motif_path = pickle.load(file_c)
+    
+#with open('discovery_fdr_score.pkl', 'rb') as file_d:      
+#    # Call load method to deserialze
+#    discovery_fdr_score = pickle.load(file_d)
     
 with open('database_path.pkl', 'rb') as file_e:      
     # Call load method to deserialze
@@ -37,7 +37,7 @@ with open('fdr.pkl', 'rb') as file_f:
     fdr_percent = pickle.load(file_f)
 
 with open('max_precursor_z.pkl', 'rb') as file_g:      
-#    # Call load method to deserialze
+    # Call load method to deserialze
     max_p_charge = pickle.load(file_g)
 
 with open('max_fragment_z.pkl', 'rb') as file_h:      
