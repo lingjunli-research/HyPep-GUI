@@ -13,9 +13,9 @@ with open('peaks_path.pkl', 'rb') as file_l:
     # Call load method to deserialze
     peaks_path = pickle.load(file_l)
 
-with open('motif_path.pkl', 'rb') as file_c:      
+#with open('motif_path.pkl', 'rb') as file_c:      
     # Call load method to deserialze
-    motif_path = pickle.load(file_c)
+#    motif_path = pickle.load(file_c)
 
 def input_list():
     """
@@ -117,11 +117,12 @@ def precursor_sequence_data():
         modified_precursor_sequence_dict[sequence] = sequence.replace('I','L')
     return modified_precursor_sequence_dict, scan_number_dict
 
-def motifs():
+
+#def motifs():
     """
     ### Retrieve data from user's motif.csv input file
 
     Return:
         Pandas Dataframe with headers: motif sequences and the starting positions
     """
-    return pd.read_csv(motif_path, usecols=['Motif Sequence', 'Start Position'])
+    #return pd.read_csv(motif_path, usecols=['Motif Sequence', 'Start Position'])
